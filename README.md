@@ -1,2 +1,16 @@
-# Naiku-AND-TEST-Novel_Reader
-导入本地txt文件立即流畅阅读，基于Dart(flutter)和Android SDK还有Java SDK制作的面向安卓领域的App，非开发人员请安装发行版
+# novel_reader
+
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
