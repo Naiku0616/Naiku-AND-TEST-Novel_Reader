@@ -1,11 +1,29 @@
 import 'dart:io';
 import 'dart:convert';
+import 'dart:math';
+import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:novel_reader/data/models/novel.dart';
 import 'package:novel_reader/data/local/storage_service.dart';
 
 class NovelImporter {
+  static final Random _random = Random();
+  static final List<Color> _coverColors = [
+    const Color.fromARGB(255, 108, 92, 231),
+    const Color.fromARGB(255, 0, 184, 148),
+    const Color.fromARGB(255, 225, 112, 85),
+    const Color.fromARGB(255, 9, 132, 227),
+    const Color.fromARGB(255, 253, 121, 168),
+    const Color.fromARGB(255, 0, 206, 201),
+    const Color.fromARGB(255, 99, 110, 114),
+    const Color.fromARGB(255, 45, 52, 54),
+  ];
+
+  static int _generateRandomCoverColor() {
+    return _coverColors[_random.nextInt(_coverColors.length)].toARGB32();
+  }
+
   Future<Novel?> importNovel() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -16,21 +34,42 @@ class NovelImporter {
 
       if (result != null && result.files.isNotEmpty) {
         final file = result.files.first;
-        final fileContent = await _safeReadFile(file.path!);
+        final filePath = file.path!;
 
-        // 简单提取书名和作者
+        final existingNovels = await StorageService().getAllNovels();
+        StorageService().clearCache();
+
+        final isDuplicate =
+            existingNovels.any((novel) => novel.filePath == filePath);
+
+        if (isDuplicate) {
+          debugPrint('该文件已导入: $filePath');
+          return null;
+        }
+
+        final fileContent = await _safeReadFile(filePath);
+
         final title = _extractTitle(file.name, fileContent);
         final author = _extractAuthor(fileContent);
 
-        // 创建小说对象
         final novel = Novel.create(
           title: title,
           author: author,
-          filePath: file.path!,
-        );
+          filePath: filePath,
+        ).copyWith(coverColor: _generateRandomCoverColor());
 
-        // 保存到本地存储
         await StorageService().saveNovel(novel);
+
+        final updatedNovels = await StorageService().getAllNovels();
+        final duplicateCheck =
+            updatedNovels.where((n) => n.filePath == filePath).toList();
+
+        if (duplicateCheck.length > 1) {
+          debugPrint('检测到重复导入，正在清理...');
+          await StorageService().deleteNovel(novel.id);
+          return null;
+        }
+
         return novel;
       }
     } catch (e) {
@@ -122,5 +161,43 @@ class NovelImporter {
 
   Future<String> readNovelContent(String filePath) async {
     return await _safeReadFile(filePath);
+  }
+
+  Future<bool> exportNovel(Novel novel) async {
+    try {
+      debugPrint('开始导出小说: ${novel.title}');
+      debugPrint('源文件路径: ${novel.filePath}');
+
+      final content = await readNovelContent(novel.filePath);
+      debugPrint('读取到内容长度: ${content.length} 字符');
+
+      if (content.isEmpty) {
+        debugPrint('警告: 文件内容为空');
+      }
+
+      final bytes = utf8.encode(content);
+      debugPrint('编码后字节长度: ${bytes.length}');
+
+      String? outputPath = await FilePicker.platform.saveFile(
+        dialogTitle: '导出小说',
+        fileName: '${novel.title}.txt',
+        type: FileType.custom,
+        allowedExtensions: ['txt'],
+        bytes: bytes,
+      );
+
+      if (outputPath == null) {
+        debugPrint('用户取消了导出');
+        return false;
+      }
+
+      debugPrint('目标文件路径: $outputPath');
+      debugPrint('文件写入成功');
+      return true;
+    } catch (e) {
+      debugPrint('导出失败: $e');
+      debugPrint('错误类型: ${e.runtimeType}');
+      return false;
+    }
   }
 }

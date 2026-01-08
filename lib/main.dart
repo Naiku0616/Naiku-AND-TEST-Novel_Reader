@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:novel_reader/core/themes/app_theme.dart';
 import 'package:novel_reader/presentation/bloc/novel_provider.dart';
+import 'package:novel_reader/presentation/bloc/theme_provider.dart';
 import 'package:novel_reader/presentation/screens/library_screen.dart';
 
 void main() {
@@ -13,15 +14,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => NovelProvider(),
-      child: MaterialApp(
-        title: '小说阅读器',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        home: const LibraryScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => NovelProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: '小说阅读器',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeProvider.themeMode,
+            home: const LibraryScreen(),
+          );
+        },
       ),
     );
   }

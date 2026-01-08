@@ -66,24 +66,30 @@ class NovelProvider extends ChangeNotifier {
   Future<void> updateNovelLastRead(String novelId) async {
     try {
       await StorageService().updateLastRead(novelId);
-      // 更新列表中的时间
       final index = _novels.indexWhere((n) => n.id == novelId);
       if (index != -1) {
         final novel = _novels[index];
-        final updatedNovel = Novel(
-          id: novel.id,
-          title: novel.title,
-          author: novel.author,
-          filePath: novel.filePath,
-          createdAt: novel.createdAt,
+        final updatedNovel = novel.copyWith(
           lastReadAt: DateTime.now(),
-          totalChapters: novel.totalChapters,
         );
         _novels[index] = updatedNovel;
         notifyListeners();
       }
     } catch (e) {
       debugPrint('更新阅读时间失败: $e');
+    }
+  }
+
+  Future<void> updateNovelProgress(Novel updatedNovel) async {
+    try {
+      await StorageService().saveNovel(updatedNovel);
+      final index = _novels.indexWhere((n) => n.id == updatedNovel.id);
+      if (index != -1) {
+        _novels[index] = updatedNovel;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('更新阅读进度失败: $e');
     }
   }
 }

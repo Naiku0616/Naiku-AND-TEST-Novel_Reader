@@ -11,19 +11,13 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.6
   
-  # 核心依赖 - 【关键修改】从GitHub主分支获取file_picker
-  file_picker:
-    git:
-      url: https://github.com/miguelpruivo/flutter_file_picker.git
-      ref: master # 使用最新的开发代码，通常包含最新修复
+  file_picker: ^8.1.2
   path_provider: ^2.1.1
   shared_preferences: ^2.2.2
   uuid: ^4.3.3
   
-  # UI美化
   google_fonts: ^6.1.0
   
-  # 状态管理
   provider: ^6.1.1
 
 dev_dependencies:

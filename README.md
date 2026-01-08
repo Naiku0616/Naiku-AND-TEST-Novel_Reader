@@ -1,89 +1,157 @@
-# Novel Reader - 小说阅读器
+# 📚 Novel Reader
 
-一款基于 Flutter 开发的高性能本地小说阅读器，专注于解决大文件阅读卡顿问题，提供极致流畅的个性化阅读体验。
+一个美观且功能强大的本地小说阅读应用，支持多种个性化设置和阅读辅助功能。
 
-## 🎯 项目得意之处
+![Flutter](https://img.shields.io/badge/Flutter-3.0%2B-blue?style=flat-square&logo=flutter)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=flat-square)
 
-### 1. ⚡ **攻克顽固的技术兼容性问题**
-我遭遇并成功解决了 Flutter 生态中一个经典的“老大难”问题：
-- **问题**：新版本 Flutter 废弃了旧的 V1 插件 API，导致 `file_picker` 等插件出现 `PluginRegistry.Registrar` 编译错误。
-- **解决**：没有停留在简单降级，而是通过**深入分析插件源码**，结合**清理全局缓存** + **切换插件分支**的组合策略，最终使用 GitHub 主分支的最新代码完美解决，保障了项目的长期可维护性。
+## ✨ 功能特性
 
-### 2. 🚀 **极致的性能优化：告别大文件卡顿**
-这是本项目的**核心得意之作**。传统的文本阅读器一次性加载整个文件，在打开数 MB 甚至更大的小说时，会导致严重的内存占用和界面卡顿。
+### 📖 阅读体验
+- **智能分页**：自动将长文本分页显示，每页约1500字符
+- **流畅翻页**：支持滑动手势翻页，动画流畅自然
+- **自动阅读**：可调节速度的自动翻页模式（1-10速）
+- **书签管理**：随时添加、删除书签，快速定位阅读位置
+- **阅读进度**：自动保存阅读进度，支持断点续读
 
-    - **智能判断**：小文件直接快速加载，大文件自动启用分页。
-    - **流畅体验**：通过 `PageView.builder` 实现按需渲染，翻页如丝般顺滑。
-    - **效果对比**：从“打开文件时界面假死”到“无论多大文件都能秒开并流畅滚动”，体验提升巨大。
+### 🎨 个性化设置
+- **字体大小**：12px - 24px 自由调节
+- **行距设置**：1.2 - 2.2 行高调节
+- **字体选择**：系统默认、衬线体、等宽体、手写体四种字体
+- **阅读主题**：
+  - ☀️ 日间模式（白色背景）
+  - 🌙 夜间模式（深色背景）
+  - 👁️ 护眼模式（淡绿色背景）
+  - 📜 羊皮模式（暖色背景）
 
-### 3. 🛡️ **健壮的工程实践与细节打磨**
-
-- **安全的异步交互**：在所有 `async` 操作后严格检查 `if (!context.mounted) return;`，彻底避免组件卸载后更新状态导致的崩溃，让应用更稳定。
-- **贴心的交互反馈**：为 `GestureDetector` 设置 `HitTestBehavior.opaque`，确保屏幕任意区域点击都能可靠响应，解决了设置面板呼出不灵的问题。
-- **清晰的架构设计**：采用 `Provider` 进行状态管理，代码结构清晰（`models`, `services`, `presentation`），易于后续功能扩展。
-
----
-
-## 📸 应用截图与演示
-
-- ![小说书架页面](assets/images/novel_bookshelf.png)
-- ![小说上传页面](assets/images/novel_import.png)
-- ![小说daylight页面](assets/images/reader_light.png)
-- ![小说daynight页面](assets/images/reader_dark.png)
-
----
+### 📚 书架管理
+- **文件导入**：支持从本地导入 TXT 格式小说文件
+- **列表/网格视图**：自由切换书架展示方式
+- **搜索功能**：支持按书名、作者搜索
+- **高级筛选**：按阅读时间、添加时间、进度排序
+- **阅读统计**：记录阅读时长、阅读页数等数据
 
 ## 🚀 快速开始
 
-### 环境准备
-- Flutter SDK (>= 3.0.0)
-- Android Studio / VS Code
+### 环境要求
+- Flutter SDK >= 3.0.0
+- Dart SDK >= 2.19.0
+- Android SDK / iOS SDK / macOS / Windows / Linux
 
-### 运行步骤
+### 安装步骤
+
+1. **克隆项目**
 ```bash
-# 1. 克隆项目
-git clone [你的项目仓库地址]
+git clone https://github.com/yourusername/novel_reader.git
 cd novel_reader
+```
 
-# 2. 获取依赖 (使用了特定的 file_picker 分支)
+2. **安装依赖**
+```bash
 flutter pub get
+```
 
-# 3. 运行到设备
+3. **运行应用**
+```bash
 flutter run
 ```
 
+### 构建发布
+
+**Android APK**
+```bash
+flutter build apk --release
+```
+
+**iOS**
+```bash
+flutter build ios --release
+```
+
+**Windows**
+```bash
+flutter build windows --release
+```
+
+## 📁 项目结构
+
+```
+novel_reader/
+├── android/                    # Android 平台相关配置
+├── ios/                        # iOS 平台相关配置
+├── lib/                        # Flutter 源代码
+│   ├── core/                   # 核心层
+│   │   ├── services/           # 服务层
+│   │   │   └── novel_importer.dart  # 小说导入服务
+│   │   └── themes/             # 主题配置
+│   │       └── app_theme.dart  # 应用主题定义
+│   ├── data/                   # 数据层
+│   │   ├── local/              # 本地存储
+│   │   │   └── storage_service.dart # SharedPreferences 存储
+│   │   └── models/             # 数据模型
+│   │       ├── novel.dart           # 小说模型
+│   │       ├── bookmark.dart        # 书签模型
+│   │       ├── chapter.dart         # 章节模型
+│   │       └── reading_stats.dart   # 阅读统计模型
+│   ├── presentation/           # 表现层
+│   │   ├── bloc/               # 状态管理
+│   │   │   ├── novel_provider.dart  # 小说状态管理
+│   │   │   └── theme_provider.dart  # 主题状态管理
+│   │   ├── screens/            # 页面
+│   │   │   ├── library_screen.dart  # 书架页面
+│   │   │   └── reader_screen.dart   # 阅读页面
+│   │   └── widgets/            # 组件
+│   │       └── novel_card.dart      # 小说卡片组件
+│   └── main.dart               # 应用入口
+├── linux/                      # Linux 平台配置
+├── macos/                      # macOS 平台配置
+├── pubspec.yaml                # 依赖配置
+└── README.md                   # 项目文档
+```
+
+## 🛠️ 技术栈
+
+| 技术 | 用途 |
+|------|------|
+| **Flutter** | 跨平台 UI 框架 |
+| **Provider** | 状态管理 |
+| **SharedPreferences** | 本地数据持久化 |
+| **File Picker** | 文件选择 |
+| **UUID** | 唯一标识符生成 |
+| **Google Fonts** | 字体支持 |
+
+## 📱 界面预览
+
+### 书架页面
+- 卡片式展示已导入的小说
+- 显示书名、作者、阅读进度
+- 支持长按快捷操作
+
+### 阅读页面
+- 顶部/底部菜单可隐藏
+- 左侧/右侧/顶部/底部触控区域可配置
+- 设置面板支持多种自定义选项
+
+## 🤝 贡献指南
+
+欢迎贡献代码！请遵循以下步骤：
+
+1. Fork 本项目
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 发起 Pull Request
+
+## 📄 开源协议
+
+本项目基于 MIT License 开源，详情请参阅 [LICENSE](LICENSE) 文件。
+
+## 🙏 致谢
+
+- [Flutter Team](https://flutter.dev/) - 优秀的跨平台框架
+- [Flutter Packages](https://pub.dev/) - 丰富的插件生态
+
 ---
 
-## 📦 核心依赖包
-
-我们精挑细选，并解决了关键的兼容性问题：
-| 包名 | 用途 | 备注 |
-| :--- | :--- | :--- |
-| **file_picker** | 文件选择 | **关键**：使用 GitHub `master` 分支，完美兼容新 Flutter |
-| **provider** | 状态管理 | 轻量高效，逻辑清晰 |
-| **shared_preferences** | 本地存储 | 持久化书架和简单配置 |
-| **google_fonts** | 字体/UI 美化 | 提升视觉体验 |
-
----
-
-## 🤝 贡献与反馈
-
-我们欢迎所有形式的贡献！
-1.  **报告问题**：如果您发现任何 Bug 或有改进建议，请在 [Issues](https://github.com/你的用户名/novel_reader/issues) 中提出。
-2.  **提交代码**：欢迎提交 Pull Request。请确保代码风格一致并通过分析。
-3.  **分享想法**：有关新功能（如书签、朗读、云同步）的讨论也非常欢迎！
-
----
-
-## 📄 许可证
-
-本项目采用 **Apache License 2.0**。您可以自由地使用、修改和分发代码，请遵守该许可证的相关条款。
-
----
-
-**如果喜欢这个项目，请别忘了点一个 Star！⭐** 您的支持是我们持续优化的最大动力。
-
-> **开发者寄语**：这个项目源于一个简单的阅读需求，但在解决一系列技术挑战的过程中，它变成了一个关于**性能优化**和**代码健壮性**的实践案例。我们希望它不仅能用来阅读，也能为其他 Flutter 开发者提供一些参考。
-
-
-
+⭐ 如果本项目对您有帮助，欢迎给个 Star 支持一下！

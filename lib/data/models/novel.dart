@@ -9,6 +9,9 @@ class Novel {
   final DateTime createdAt;
   final DateTime lastReadAt;
   final int totalChapters;
+  final int currentPage;
+  final int totalPages;
+  final int coverColor;
 
   const Novel({
     required this.id,
@@ -18,6 +21,9 @@ class Novel {
     required this.createdAt,
     required this.lastReadAt,
     required this.totalChapters,
+    this.currentPage = 0,
+    this.totalPages = 0,
+    this.coverColor = 0,
   });
 
   factory Novel.create({
@@ -25,14 +31,41 @@ class Novel {
     required String author,
     required String filePath,
   }) {
+    final now = DateTime.now();
     return Novel(
-      id: Uuid().v4(),
+      id: const Uuid().v4(),
       title: title,
       author: author,
       filePath: filePath,
-      createdAt: DateTime.now(),
-      lastReadAt: DateTime.now(),
+      createdAt: now,
+      lastReadAt: now,
       totalChapters: 0,
+    );
+  }
+
+  Novel copyWith({
+    String? id,
+    String? title,
+    String? author,
+    String? filePath,
+    DateTime? createdAt,
+    DateTime? lastReadAt,
+    int? totalChapters,
+    int? currentPage,
+    int? totalPages,
+    int? coverColor,
+  }) {
+    return Novel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      author: author ?? this.author,
+      filePath: filePath ?? this.filePath,
+      createdAt: createdAt ?? this.createdAt,
+      lastReadAt: lastReadAt ?? this.lastReadAt,
+      totalChapters: totalChapters ?? this.totalChapters,
+      currentPage: currentPage ?? this.currentPage,
+      totalPages: totalPages ?? this.totalPages,
+      coverColor: coverColor ?? this.coverColor,
     );
   }
 
@@ -45,11 +78,13 @@ class Novel {
       'createdAt': createdAt.toIso8601String(),
       'lastReadAt': lastReadAt.toIso8601String(),
       'totalChapters': totalChapters,
+      'currentPage': currentPage,
+      'totalPages': totalPages,
+      'coverColor': coverColor,
     };
   }
 
   factory Novel.fromMap(Map<String, dynamic> map) {
-    // 关键修复：移除了const关键字，因为map['id']等是运行时值，不是编译时常量
     return Novel(
       id: map['id'],
       title: map['title'],
@@ -58,6 +93,9 @@ class Novel {
       createdAt: DateTime.parse(map['createdAt']),
       lastReadAt: DateTime.parse(map['lastReadAt']),
       totalChapters: map['totalChapters'],
+      currentPage: map['currentPage'] ?? 0,
+      totalPages: map['totalPages'] ?? 0,
+      coverColor: map['coverColor'] ?? 0,
     );
   }
 }
